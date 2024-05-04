@@ -3,7 +3,12 @@ from math import floor
 def pathfindingToTerminal(startingPoint, 
                           endingPoint, 
                           aeroport):
+    visitedTiles = [[False for col in range(aeroport[0].len())] for row in range(aeroport.len())]
     
+    queue = [startingPoint]
+    
+    
+
 
 
 def normalizePositions(pos,
@@ -20,7 +25,7 @@ def normalizePositions(pos,
     if posY <= 0:
         posY = 0
     elif posY >= aeroport.len():
-        posY = aeroport.len() - 1
+        posY = aeroport[0].len() - 1
     else:
         posY = floor(posY)
     
