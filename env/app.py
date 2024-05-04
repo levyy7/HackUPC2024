@@ -57,9 +57,15 @@ def data_get():
 
     posX, posY = triangulatePosition(circle1, circle2, circle3)
 
+    #nposX, nposY = normalizePositions((posX, posY))
+    
+    #remainingMetersStraight, nextDirection = pathfindingToTerminal((nposX, nposY), terminalPos, aeroport)
+    
     return {
         "posX": posX, 
-        "posY": posY
+        "posY": posY,
+        "remainingMetersStraight": -1,
+        "nextDirection": -1
     }
 
 #http://192.168.137.1:5000/test2?ticket_id=12345678
