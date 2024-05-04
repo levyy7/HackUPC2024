@@ -4,6 +4,8 @@ from computeDistanceFromRouterStrength import computeDistanceFromRouter1Strength
 app = Flask(__name__)
 
 r1X, r1Y = 0, 0
+r2X, r2Y = 1, 0
+r3X, r3Y = 1, 1
 
 @app.route("/")
 def hello_world():
