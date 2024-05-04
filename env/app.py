@@ -14,7 +14,7 @@ cursor.execute(
         id varchar(8) PRIMARY KEY,
         boarding_gate int NOT NULL);'''
 )
-#inicializar la tabla
+#inicializar la tabla SOLO LA PRIMERA VEZ
 #cursor.execute(
 #    '''INSERT INTO ticket (id, boarding_gate) VALUES \
 #        ('12345678', 0),
