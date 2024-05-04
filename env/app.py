@@ -1,6 +1,7 @@
 from flask import Flask, request
 from computeDistanceFromRouterStrength import computeDistanceFromRouter1Strength, computeDistanceFromRouter2Strength, computeDistanceFromRouter3Strength
 from triangulatePosition import triangulatePosition
+from pathfindingAlgorithm import pathfindingToTerminal, normalizePositions
 import psycopg2 
 
 app = Flask(__name__)
@@ -54,16 +55,18 @@ def data_get():
     circle2 = (r2X, r2Y, routers_distance[1])
     circle3 = (r3X, r3Y, routers_distance[2])
 
+    boardingGate = getFromTickets("abcdefgh")
 
     posX, posY = triangulatePosition(circle1, circle2, circle3)
 
     #nposX, nposY = normalizePositions((posX, posY))
     
-    #remainingMetersStraight, nextDirection = pathfindingToTerminal((nposX, nposY), terminalPos, aeroport)
+    #movCounter, movDirection = pathfindingToTerminal((nposX, nposY), terminalPos, aeroport)
     
     return {
         "posX": posX, 
         "posY": posY,
+        "boardingGate": boardingGate,
         "remainingMetersStraight": -1,
         "nextDirection": -1
     }
@@ -88,4 +91,20 @@ def data_get2():
     
     return str(boarding_gate)
     
+
+def getFromTickets(ticket_id):
+    connection = psycopg2.connect(database="hack2024_vueling", 
+                            user="postgres", 
+                            password="psql", 
+                            host="localhost", port="5432") 
+    cursor = connection.cursor()
     
+    cursor.execute('''SELECT boarding_gate
+                   FROM ticket
+                   WHERE id = ''' + "'" + ticket_id + "'")
+    boarding_gate = cursor.fetchall()[0][0]
+    
+    cursor.close()
+    connection.close()
+    
+    return boarding_gate
