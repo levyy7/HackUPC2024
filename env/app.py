@@ -1,5 +1,6 @@
 from flask import Flask, request
 from computeDistanceFromRouterStrength import computeDistanceFromRouter1Strength, computeDistanceFromRouter2Strength, computeDistanceFromRouter3Strength
+from triangulatePosition import triangulatePosition
 
 app = Flask(__name__)
 
@@ -26,12 +27,15 @@ def data_get():
         computeDistanceFromRouter3Strength(routers_strength[2])
     ]
 
-    #circles = [
-    #    Circle(r1X, r1Y, routers_distance[0]),
-    #    Circle(r2X, r2Y, routers_distance[1]), 
-    #    Circle(r3X, r3Y, routers_distance[2])
-    #]
 
-    #posX, posY = triangulatePosition(routers_distance)
+    circle1 = (r1X, r1Y, routers_distance[0])
+    circle2 = (r2X, r2Y, routers_distance[1])
+    circle3 = (r3X, r3Y, routers_distance[2])
 
-    return str(routers_strength[1])
+
+    posX, posY = triangulatePosition(circle1, circle2, circle3)
+
+    return {
+        "posX": posX, 
+        "posY": posY
+    }

@@ -5,8 +5,20 @@ def triangulatePosition(circle1, circle2, circle3):
     x2,y2,r2 = circle2
     x3,y3,r3 = circle3
 
+    print((r1, r2, r3))
+    
     d12 = dis((x1, y1), (x2, y2))
 
+    if d12 > r1+r2:
+        print ("#1")
+        return None # no solutions, the circles are separate
+    if d12 < abs(r1-r2):
+        print("#2")
+        return None # no solutions because one circle is contained within the other
+    if d12 == 0 and r1 == r2:
+        print("#3")
+        return None # circles are coincident and there are an infinite number of solutions
+    
     a = (r1*r1 - r2*r2 + d12*d12)/(2*d12)
     h = sqrt(r1*r1-a*a)
     xm = x1 + a*(x2 - x1)/d12
@@ -20,8 +32,8 @@ def triangulatePosition(circle1, circle2, circle3):
     p1 = (xs1, ys1)
     p2 = (xs2, ys2)
     
-    disToP1 = dis((x3, y3), p1) - r3
-    disToP2 = dis((x3, y3), p2) - r3
+    disToP1 = abs(dis((x3, y3), p1) - r3)
+    disToP2 = abs(dis((x3, y3), p2) - r3)
     
     return p1 if disToP1 <= disToP2 else p2
     
@@ -43,4 +55,4 @@ def test():
     return triangulatePosition(circle1, circle2, circle3)
 
 
-print(test())
+#print(test())
