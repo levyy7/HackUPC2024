@@ -1,7 +1,7 @@
 from flask import Flask, request
 from computeDistanceFromRouterStrength import computeDistanceFromRouter1Strength, computeDistanceFromRouter2Strength, computeDistanceFromRouter3Strength
 from triangulatePosition import triangulatePosition
-from pathfindingAlgorithm import pathfindingToTerminal, normalizePositions
+from pathfindingAlgorithm import pathfindingToTerminal, normalizePositions, computeNormalizedRotationFromDegrees, computeRelativeRotation
 from airportMaps import getA3001MAP, getA6201MAP, getA3001GATE
 import psycopg2 
 
@@ -45,7 +45,7 @@ def data_get():
         float(request.args.get('router3'))
     ]
     ticketID = request.args.get('ticketID')
-    northRespectiveRotation = request.args.get('rotation')
+    northRespectiveRotation = float(request.args.get('rotation'))
 
     routers_distance = [
         computeDistanceFromRouter1Strength(routers_strength[0]),
@@ -62,19 +62,24 @@ def data_get():
 
     posX, posY = triangulatePosition(circle1, circle2, circle3)
 
-    nposX, nposY = normalizePositions((posX, posY), getA6201MAP())
+    nposX, nposY = normalizePositions((posX, posY), getA3001MAP())
+    print((nposX, nposY))
     
     gatePos = getA3001GATE()[boardingGate]
-    movCounter, movDirection = pathfindingToTerminal((nposX, nposY), gatePos, getA6201MAP())
     
+    normalizedMobileRotation = computeNormalizedRotationFromDegrees(northRespectiveRotation)
+    print(normalizedMobileRotation)
     
+    movCounter, movDirection = pathfindingToTerminal((nposX, nposY), gatePos, normalizedMobileRotation, getA3001MAP())
+    
+    newDirection = computeRelativeRotation(movDirection, normalizedMobileRotation)
     
     return {
         "posX": posX, 
         "posY": posY,
         "boardingGate": boardingGate,
-        "remainingMetersStraight": movCounter,
-        "nextDirection": movDirection
+        "numMetersInThatDirection": movCounter,
+        "relativeDirection": newDirection
     }
 
 #http://192.168.137.1:5000/test2?ticket_id=12345678

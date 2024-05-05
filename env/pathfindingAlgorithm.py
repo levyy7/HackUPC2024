@@ -14,6 +14,7 @@ def pathfindingToTerminal(startingPoint,
     # FIND GATEWAY
     while queue[0] != endingPoint:
         posX, posY = queue.pop(0)
+        #print((posX, posY))
         
         for i in range(4):
             movX, movY = movements[(direction + i) % 4]
@@ -41,7 +42,8 @@ def pathfindingToTerminal(startingPoint,
         movementsNew = [(0, 1), (1, 0), (0, -1), (-1, 0)]
         
         dx, dy = nextMovement[1] - startingPoint[1], startingPoint[0] - nextMovement[0]
-        print((dx, dy))
+        print('STACK:')
+        print(nextMovement)
         if dx != 0:
             movDirection = 1 if dx == 1 else 3
         else:
@@ -52,13 +54,13 @@ def pathfindingToTerminal(startingPoint,
         
         lastMovement = nextMovement
         
-        while (dx, dy) == movementsNew[movDirection]:
+        while (dx, dy) == movementsNew[movDirection] and nextMovement != endingPoint:
             movCounter = movCounter + 1
             
             nextMovement = stack.pop()
             
             dx, dy = nextMovement[1] - lastMovement[1], lastMovement[0] - nextMovement[0]
-            print((dx, dy))
+            print(nextMovement)
             
             lastMovement = nextMovement
             
@@ -100,7 +102,24 @@ def normalizePositions(pos,
     return posX, posY
 
 
-def computeRelativeRotation(movDirection, mobileDirectionDegrees):
+def computeNormalizedRotationFromDegrees(directionDegrees):
+    if directionDegrees > 315 or directionDegrees < 45:
+        normalizedMobileDirection = 0
+    elif directionDegrees >= 45 and directionDegrees < 135:
+        normalizedMobileDirection = 1
+    elif directionDegrees >= 135 and directionDegrees < 225:
+        normalizedMobileDirection = 2
+    else:
+        normalizedMobileDirection = 3
+    
+    return normalizedMobileDirection
+
+
+def computeRelativeRotation(movDirection, normalizedMobileDirection):
+    newDirection = (movDirection - normalizedMobileDirection) % 4
+    
+    return newDirection
+    
     
     
 
@@ -123,4 +142,4 @@ def test():
     return pathfindingToTerminal(startingPos, endingPos, startingMov, A6201MAP)
 
 
-print(test())
+#print(test())
