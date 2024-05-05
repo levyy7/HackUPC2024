@@ -100,6 +100,10 @@ def normalizePositions(pos,
     return posX, posY
 
 
+def computeRelativeRotation(movDirection, mobileDirectionDegrees):
+    
+    
+
 def test():
     A6201MAP = [[1,1,1,1,1,0,1],
             [0,0,0,0,0,0,0],
