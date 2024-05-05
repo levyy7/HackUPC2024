@@ -2,7 +2,7 @@ from flask import Flask, request
 from computeDistanceFromRouterStrength import computeDistanceFromRouter1Strength, computeDistanceFromRouter2Strength, computeDistanceFromRouter3Strength
 from triangulatePosition import triangulatePosition
 from pathfindingAlgorithm import pathfindingToTerminal, normalizePositions, computeNormalizedRotationFromDegrees, computeRelativeRotation
-from airportMaps import getA3001MAP, getA6201MAP, getA3001GATE
+from airportMaps import getA3001MAP, getA6201MAP, getA3001GATE, getA6201GATE
 import psycopg2 
 
 app = Flask(__name__)
@@ -28,9 +28,14 @@ connection.commit()
 cursor.close()
 connection.close()
 
-r1X, r1Y = 0, 0
-r2X, r2Y = 1, 0
-r3X, r3Y = 1, 1
+#r1X, r1Y = 0, 0
+#r2X, r2Y = 1, 0
+#r3X, r3Y = 1, 1
+
+
+r1X, r1Y = 0, 2
+r2X, r2Y = 6, 4
+r3X, r3Y = 0, 6
 
 @app.route("/")
 def hello_world():
@@ -61,18 +66,29 @@ def data_get():
     boardingGate = getFromTickets(ticketID)
 
     posX, posY = triangulatePosition(circle1, circle2, circle3)
+    
+    if posX == None or posY == None:
+        return {
+            "posX": -1, 
+            "posY": -1,
+            "boardingGate": -1,
+            "numMetersInThatDirection": -1,
+            "relativeDirection": -1
+        }
 
-    nposX, nposY = normalizePositions((posX, posY), getA3001MAP())
+    nposX, nposY = normalizePositions((posX, posY), getA6201MAP())
     print((nposX, nposY))
     
-    gatePos = getA3001GATE()[boardingGate]
+    gatePos = getA6201GATE()[boardingGate]
     
     normalizedMobileRotation = computeNormalizedRotationFromDegrees(northRespectiveRotation)
-    print(normalizedMobileRotation)
+    print('Normalized mobile rotation: ' + str(normalizedMobileRotation))
     
-    movCounter, movDirection = pathfindingToTerminal((nposX, nposY), gatePos, normalizedMobileRotation, getA3001MAP())
+    movCounter, movDirection = pathfindingToTerminal((nposX, nposY), gatePos, normalizedMobileRotation, getA6201MAP())
     
     newDirection = computeRelativeRotation(movDirection, normalizedMobileRotation)
+    print('movDirection: ' + str(movDirection))
+    print('Final Rotation: ' + str(newDirection))
     
     return {
         "posX": posX, 

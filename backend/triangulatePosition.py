@@ -11,13 +11,13 @@ def triangulatePosition(circle1, circle2, circle3):
 
     if d12 > r1+r2:
         print ("#1")
-        return None # no solutions, the circles are separate
+        return None, None # no solutions, the circles are separate
     if d12 < abs(r1-r2):
         print("#2")
-        return None # no solutions because one circle is contained within the other
+        return None, None # no solutions because one circle is contained within the other
     if d12 == 0 and r1 == r2:
         print("#3")
-        return None # circles are coincident and there are an infinite number of solutions
+        return None, None # circles are coincident and there are an infinite number of solutions
     
     a = (r1*r1 - r2*r2 + d12*d12)/(2*d12)
     h = sqrt(r1*r1-a*a)
